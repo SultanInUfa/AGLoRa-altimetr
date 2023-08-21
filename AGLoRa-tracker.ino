@@ -89,7 +89,7 @@ struct DATA {
 
   // Add more data fields here if you need
   // ...
-  // unsigned char speed;
+  unsigned char delta_alt;
   // unsigned char battery;
   // unsigned char sensor1;
   // ...
@@ -136,8 +136,8 @@ void sendPackageToBluetooth(DATA *package) {
   Serial.print(package->sat);  // satellites  1 byte
 
   // Add more data here if you need ...
-  // Serial.print("&speed=");       // data's name in app
-  // Serial.print(package->speed);   // value
+  Serial.print("&delta_alt=");       // data's name in app
+  Serial.print(package->delta_alt);   // value
 
   // Serial.print("&batt=");
   // Serial.print(package->battery);
@@ -207,6 +207,10 @@ LoRa_E220 e220ttl(&lora_ss, 6, 4, 5);  // AUX M0 M1
 //LoRa_E220 e220ttl(&lora_ss); // Config without connect AUX and M0 M1
 
 unsigned long _lastLoraPacketTime;
+//Ernst
+int delta_alt; //изменение статической высоты из-за изменения атмосферного давления  
+float Altitude; // текущее  давление при включении
+//--Ernst
 
 
 // ========== BEGIN ==========
@@ -222,6 +226,13 @@ bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
                   Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_4000); /* Standby time. */
 }
+Altitude = bmp.readAltitude(1013.25);
+// Serial.println("Send to my number... ");
+// Serial.print("Altitude =");
+// Serial.println(Altitude);
+loraSerial.println("Start new mapping day");
+delta=0;
+  
 //--Ernst BMPE280 setup end
 
   
