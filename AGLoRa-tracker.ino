@@ -192,6 +192,10 @@ void sendPackageToBluetooth(DATA *package) {
 #include "LoRa_E220.h"        // install from Arduino IDE
 // Docs: https://github.com/xreef/EByte_LoRa_E220_Series_Library
 
+//Ernst
+#include <Adafruit_BMP280.h> // install from Arduino IDE 
+//end Ernst
+
 // ========== GPS section ==========
 TinyGPSPlus gps;
 SoftwareSerial gps_ss(GPS_PIN_RX, GPS_PIN_TX);
@@ -207,6 +211,21 @@ unsigned long _lastLoraPacketTime;
 
 // ========== BEGIN ==========
 void setup() {
+  
+//Ernst BMP280 setup start
+if (!bmp.begin(0x76)) {
+Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+while (1);
+bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
+                  Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
+                  Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
+                  Adafruit_BMP280::FILTER_X16,      /* Filtering. */
+                  Adafruit_BMP280::STANDBY_MS_4000); /* Standby time. */
+}
+//--Ernst BMPE280 setup end
+
+  
+  
   Serial.begin(9600);
 
   agloraGreetings();            // Beautifully print Hello from AGloRa :-)
